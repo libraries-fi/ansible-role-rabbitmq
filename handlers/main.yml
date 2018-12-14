@@ -1,0 +1,21 @@
+---
+# Stop epmd after rabbitmq so that epmd reads new env variables.
+# Only restarting epmd leads to rabbitmq also starting it,
+# and it errors for trying to have 2 epmd processes.
+- name: stop rabbitmq
+  service:
+    name: rabbitmq-server
+    state: stopped
+  listen: "restart rabbitmq"
+
+- name: stop epmd
+  service:
+    name: epmd
+    state: stopped
+  listen: "restart rabbitmq"
+
+- name: start rabbitmq
+  service:
+    name: rabbitmq-server
+    state: started
+  listen: "restart rabbitmq"
